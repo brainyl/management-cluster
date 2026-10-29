@@ -1,0 +1,56 @@
+# AWS destination
+aws_region   = "us-west-2"
+environment  = "production"
+cluster_name = "management-cluster"
+
+# Network
+vpc_cidr             = "10.0.0.0/16"
+availability_zones   = ["us-west-2a", "us-west-2b", "us-west-2c"]
+private_subnet_cidrs = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
+public_subnet_cidrs  = ["10.0.101.0/24", "10.0.102.0/24", "10.0.103.0/24"]
+enable_nat_gateway   = true
+single_nat_gateway   = false
+
+# Project-wide EKS version
+cluster_version = "1.37"
+
+# Crossplane and AWS Pod Identity
+crossplane_namespace                         = "crossplane-system"
+crossplane_service_account_name              = "crossplane-provider-aws"
+crossplane_member_account_ids                = []
+crossplane_member_account_role_name          = "crossplane-provider-aws"
+crossplane_chart_version                     = "2.4.3"
+enable_composition_webhook_schema_validation = true
+install_aws_providers                        = true
+aws_provider_version                         = "v2.9.3"
+create_provider_config                       = true
+provider_config_name                         = "default"
+
+# ArgoCD class configuration (admin login and anonymous admin access)
+argocd_chart_version       = "10.10.5"
+argocd_server_service_type = "ClusterIP"
+argocd_ingress_enabled     = true
+argocd_ingress_scheme      = "internet-facing"
+
+# Root GitOps: render first; enable automatic sync when validating children.
+create_root_application       = true
+root_automated_sync           = false
+root_application_name         = "control-plane-root"
+control_plane_repo_url        = "https://github.com/brainyl/management-config"
+control_plane_target_revision = "main"
+control_plane_chart_path      = "."
+root_destination_namespace    = "argocd"
+
+# External Secrets and private GitHub repositories
+eso_chart_version        = "2.3.0"
+eso_service_account_name = "external-secrets"
+github_token             = "" # Set only in the ignored terraform.tfvars.
+github_repos = [
+  "https://github.com/brainyl/management-config",
+  "https://github.com/brainyl/infra-management-api",
+  "https://github.com/brainyl/infra-management-config",
+  "https://github.com/brainyl/environment-platform-config",
+  "https://github.com/brainyl/environment-deployment-config",
+  "https://github.com/brainyl/workload-environment-api",
+  "https://github.com/brainyl/platform-capabilities",
+]

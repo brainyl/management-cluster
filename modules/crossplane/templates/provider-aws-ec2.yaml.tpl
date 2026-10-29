@@ -1,0 +1,9 @@
+apiVersion: pkg.crossplane.io/v1
+kind: Provider
+metadata:
+  name: provider-aws-ec2
+spec:
+  package: xpkg.upbound.io/upbound/provider-aws-ec2:${provider_version}
+  packagePullPolicy: IfNotPresent
+  runtimeConfigRef:
+    name: ${runtime_config_name}
