@@ -12,6 +12,8 @@ ArgoCD must be running in the first cluster before it can deploy anything from G
 
 Prerequisites: AWS CLI, Terraform 1.x (`~> 1.5`), kubectl compatible with Kubernetes 1.37, Python 3, and access to the project repositories. Keep the committed Terraform provider lock file.
 
+This path builds the foundation, installs the controllers, and connects Git. To stop after EKS and networking, follow [Run one stage at a time](#run-one-stage-at-a-time).
+
 1. Authenticate to the intended AWS account and configure the module:
 
    ```bash
@@ -50,7 +52,9 @@ Prerequisites: AWS CLI, Terraform 1.x (`~> 1.5`), kubectl compatible with Kubern
 
 ## Run one stage at a time
 
-From this checkout with private inputs prepared, set the intended account and run only the stages needed for your checkpoint:
+Authenticate and copy `terraform.tfvars.example` to ignored `terraform.tfvars` for a new checkout, as shown above. Set the AWS region, cluster name, network inputs and `cluster_version = "1.37"`. The example also contains settings for later stages; foundation applies only the VPC and EKS modules.
+
+From this checkout, set the intended account and build the foundation:
 
 ```bash
 export AWS_PROFILE=infra-ops
@@ -72,7 +76,14 @@ kubectl get nodes
 kubectl -n kube-system get pods
 ```
 
-Zero Auto Mode nodes is valid before Pods need compute. Omit `--kubeconfig` and unset `KUBECONFIG` if you prefer merging the context into your default kubeconfig. To complete the root later:
+Zero Auto Mode nodes is valid before Pods need compute. Omit `--kubeconfig` and unset `KUBECONFIG` if you prefer merging the context into your default kubeconfig. To complete the root later, set the repository URLs and `github_token` privately in `terraform.tfvars`, and set or confirm:
+
+```hcl
+create_root_application = true
+root_automated_sync     = false
+```
+
+The GitOps stage creates the root Application and leaves automatic sync disabled. Then run:
 
 ```bash
 ./scripts/bootstrap.sh controllers
