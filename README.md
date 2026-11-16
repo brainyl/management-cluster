@@ -134,7 +134,7 @@ The root uses Helm chart **10.10.5** with image **v3.5.6** explicitly pinned (th
 
 ## ArgoCD access
 
-The class configuration enables the built-in admin account and anonymous admin access. With ingress enabled, obtain the address using `kubectl -n argocd get ingress`. Alternatively:
+The class configuration enables the built-in admin account and anonymous admin access. Keep `argocd_ingress_enabled = false` and use a local port-forward to access Argo CD without creating an ALB:
 
 ```bash
 kubectl -n argocd port-forward svc/argocd-server 8080:80

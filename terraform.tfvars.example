@@ -29,7 +29,7 @@ provider_config_name                         = "default"
 # ArgoCD class configuration (admin login and anonymous admin access)
 argocd_chart_version       = "10.10.5"
 argocd_server_service_type = "ClusterIP"
-argocd_ingress_enabled     = true
+argocd_ingress_enabled     = false
 argocd_ingress_scheme      = "internet-facing"
 
 # Root GitOps: render first; enable automatic sync when validating children.
